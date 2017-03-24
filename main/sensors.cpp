@@ -1,17 +1,12 @@
 #include "sensors.h"
 
 
-BasicSensor::BasicSensor(Expression* expression){
-  expression = expression;
-}
-
 double BasicSensor::getValue(){
   double x;
   x = readFromHW();
-  
-  return expression->calc(x);
-}
+  return (a*x+b);
 
+}
 
 
 double SimulatorSensor::readFromHW(){

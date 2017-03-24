@@ -25,6 +25,7 @@ class RemoteSensor(object):
 
 if __name__ == '__main__':
     import sys
+    print sys.argv
     if len(sys.argv) > 2:
         host = sys.argv[1]
     else:

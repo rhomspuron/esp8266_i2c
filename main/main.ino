@@ -1,21 +1,19 @@
 #include "com.h"
 #include "sensors.h"
 #include "functions.h"
+#include "pwds.h"
 
 
-char ssid[100];
-char password [100];
 const int server_port = 23;
 bool has_client = false;
 
 WiFiServer server(23);
 WifiCom com;
-double e1[] = {2,1};
-double e2[] = {1,2,4};
-ExpExpression ep1(e1, 1);
-ExpExpression ep2(e2,2);
-SimulatorSensor st1(&ep1);
-BasicSensor st2(&ep2);
+
+
+
+SimulatorSensor st1 = {2,1};
+BasicSensor st2;
 
 BasicSensor* sensor[] = {&st1,&st2};
 double sensor_values[2];
@@ -49,9 +47,7 @@ void setup() {
 }
 
 void loop() {
-  uint8_t i;
-  double value;
-  String temps;
+  bool flg_exit = false;
   if (server.hasClient()){
     Serial.println("Has client");
     WiFiClient tmp = server.available();
@@ -72,13 +68,17 @@ void loop() {
             
             
           case CONFIG: com.sendData(String("Not implemented.\n")); break;
-          case DI: com.sendData(String("DI1 High; DI2 Low;\n")); break;
+          case DI: 
+            com.sendData(String("DI1 High; DI2 Low;\n")); 
+            exit;
+            break;
          
         }
     }
     else
       has_client = false;
    }
+   
 }
 
 
