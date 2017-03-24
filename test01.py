@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import socket
 
 class RemoteSensor(object):
@@ -25,8 +27,7 @@ class RemoteSensor(object):
 
 if __name__ == '__main__':
     import sys
-    print sys.argv
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         host = sys.argv[1]
     else:
         host = '10.210.1.135'
