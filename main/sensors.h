@@ -7,16 +7,21 @@
 
 class BasicSensor{
   public:
-    BasicSensor(double a=0, double b=1):a(a),b(b){};
+    BasicSensor(double a=0, double b=1, 
+                 double v_min=-200, double v_max=200):
+                 a(a),b(b),v_min(v_min),v_max(v_max){};
+    bool isOutOfRange();
     virtual double getValue();
   private:
-    double a, b;
+    double a, b, v_min, v_max;
     virtual double readFromHW(){return 0;};
 };
 
 class SimulatorSensor: public BasicSensor{
   public:
-    SimulatorSensor(double a=0, double b=1):BasicSensor(a,b){};
+    SimulatorSensor(double a=0, double b=1, 
+                 double v_min=-200, double v_max=200):
+                 BasicSensor(a,b,v_min, v_max){};
   private:
     double readFromHW();
 };

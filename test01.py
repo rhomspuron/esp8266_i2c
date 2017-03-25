@@ -22,8 +22,13 @@ class RemoteSensor(object):
         return answer[:-1]
             
     def getTemp(self):
-        values = self._sendCmd('TEMP').split(';')[:-1]
+        values = self._sendCmd('temp').split(';')[:-1]
         return values
+
+    def getStates(self):
+        values = self._sendCmd('state').split(';')[:-1]
+        return values
+
 
 if __name__ == '__main__':
     import sys
@@ -34,5 +39,6 @@ if __name__ == '__main__':
     rs = RemoteSensor(host)
     for i in range(20):
         print rs.getTemp() 
-    
+        print rs.getStates()
+        
     

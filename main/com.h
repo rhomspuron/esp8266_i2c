@@ -5,12 +5,8 @@
 #include "stringstream.h"
 
 #define MAX_READ_BUFFER 20
-#define strTEMP "TEMP"
-#define strCONFIG "CONFIG"
-#define strDI "DI"
-#define strDO "DO"
 
-enum Cmds{NONE=0,TEMP,CONFIG,DI,DO};
+enum Cmds{NONE=0,TEMP,STATE,CONFIG,DI,DO};
 
 class WifiCom {
   public:

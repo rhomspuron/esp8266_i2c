@@ -53,22 +53,24 @@ WifiCom& WifiCom::operator=(WiFiClient& other){
   return *this;
 }
 bool WifiCom::isCmdValid(){
-  String str = String(readBuffer);
+  String str(readBuffer);
+  str.toUpperCase();
   
   //TODO Implement the protocol
-  if (str == strTEMP)
+  if (str == "TEMP")
     cmd = TEMP;
-  else if(str == strCONFIG)
+  else if (str == "STATE")
+    cmd = STATE;
+  else if(str == "CONFIG")
     cmd = CONFIG;
-  else if(str == strDI)
+  else if(str == "DI")
     cmd = DI;
-  else if(str == strDO)
+  else if(str == "DO")
     cmd = DO;
   else{
     cmd = NONE;
-    return false;
   }
-  return true;
+  return cmd==NONE? false: true;
 }
 
 void WifiCom::sendData(String data){
