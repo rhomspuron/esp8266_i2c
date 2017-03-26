@@ -28,13 +28,13 @@ void checkStates();
 
 WiFiServer server(SERVER_PORT);
 WifiCom com;
+bool flg_alarm = false;
 
 SimulatorSensor st1(2.0,1.,0.,5.);
 BasicSensor st2;
 
 BasicSensor* sensors[] = {&st1,&st2};
 int nr_sensors = 2;
-
 
 
 //**************************************************************//
@@ -79,6 +79,11 @@ void setup() {
     Serial.print(WiFi.localIP());
     Serial.println(" 23' to connect");
   }
+
+  //Start I2C bus master
+  Wire.begin();
+  
+  //Configure LED ALARM
   pinMode(GPIO_LED_ALARM, OUTPUT);
   digitalWrite(GPIO_LED_ALARM, LOW);
     
@@ -167,8 +172,7 @@ String readStates(){
 }
 //**************************************************************//
 void checkStates(){
-  digitalWrite(GPIO_LED_ALARM, LOW);
-  
+  flg_alarm = false;
   for(int i=0; i< nr_sensors; i++){
     if (sensors[i]->isOutOfRange()){
       if(DEBUG){
@@ -178,9 +182,13 @@ void checkStates(){
         Serial.print(readTemps());
       }
       //digitalWrite(GPIO_LED_ALARM, HIGH);
+      flg_alarm = true;
       break;
     } 
   }
+  if (!flg_alarm)
+    digitalWrite(GPIO_LED_ALARM, LOW);
+  
 }
 
 

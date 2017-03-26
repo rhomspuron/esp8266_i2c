@@ -26,13 +26,17 @@ class SimulatorSensor: public BasicSensor{
     double readFromHW();
 };
 
-//class I2CSensor : public BasicSensor{
-//  public:
-//    I2CSensor(int address, );
-//  private:
-//    int address;  
-//    double readFromHW();
-//}
+class I2CSensor : public BasicSensor{
+  public:
+    I2CSensor(int address, int nrBytes=2, double a=0, double b=1, 
+              double v_min=-200, double v_max=200):
+              BasicSensor(a,b,v_min, v_max), 
+              address(address), nrBytes(nrBytes){};
+  private:
+    int address;
+    int nrBytes;  
+    double readFromHW();
+}
 
 
 #endif
