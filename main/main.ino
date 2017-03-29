@@ -107,6 +107,7 @@ void loop() {
   
   while(has_client){
     if (com.isConnected()){
+      checkStates;()
       Cmds cmd = com.getCommand();
       if (cmd != NONE)
         switch (cmd){
