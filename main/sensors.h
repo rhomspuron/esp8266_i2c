@@ -36,7 +36,7 @@ class I2CSensor : public BasicSensor{
     int address;
     int nrBytes;  
     double readFromHW();
-}
+};
 
 
 #endif

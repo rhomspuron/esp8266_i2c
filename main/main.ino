@@ -3,7 +3,6 @@
 
 #include "com.h"
 #include "sensors.h"
-#include "functions.h"
 #include "pwds.h"
 
 
@@ -32,8 +31,11 @@ bool flg_alarm = false;
 
 SimulatorSensor st1(2.0,1.,0.,5.);
 BasicSensor st2;
+I2CSensor st3(0x4B,1,1,0,0,30);
+I2CSensor st4(0x4D,1,1,0,0,30);
 
-BasicSensor* sensors[] = {&st1,&st2};
+
+BasicSensor* sensors[] = {&st1,&st2,&st3,&st4};
 int nr_sensors = 2;
 
 
@@ -107,7 +109,7 @@ void loop() {
   
   while(has_client){
     if (com.isConnected()){
-      checkStates;()
+      checkStates();
       Cmds cmd = com.getCommand();
       if (cmd != NONE)
         switch (cmd){

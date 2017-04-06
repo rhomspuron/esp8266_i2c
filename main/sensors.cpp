@@ -21,15 +21,16 @@ double SimulatorSensor::readFromHW(){
 }
 
 double I2CSensor::readFromHW(){
-  char buff[nrbytes];
+  char buff[nrBytes];
   int value =0;       
   Wire.beginTransmission(address);
-  Wire.requestFrom(address, nrbytes);
-  for(int i=0; i< nrbytes; i++){
+  Wire.requestFrom(address, nrBytes);
+  for(int i=0; i< nrBytes; i++){
     buff[i]=Wire.read();
   }
   Wire.endTransmission();
   //TODO convert char to int
+  value = int(buff[0]);
   
   return double(value); 
 }
