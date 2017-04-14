@@ -10,11 +10,19 @@
 //**************************************************************//
 #define DEBUG true
 #define SERVER_PORT 23
-#define GPIO_LED_WIFI_CONNECTED 13  
-#define GPIO_LED_ALARM 16  
-#define CS1PIN 15
+
 #define CS2PIN 0
 #define CS3PIN 2
+#define I2CADPIN 4
+#define I2CCLKPIN 5
+#define MISOPIN 12
+#define GPIO_LED_WIFI_CONNECTED 13 
+#define SCLPIN 14
+#define CS1PIN 15
+#define GPIO_LED_ALARM 16
+
+#define trigger 13
+#define echo 16
 
 String readTemps(int presition=100);
 String readTempMpi(int presition=100);

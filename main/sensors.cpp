@@ -74,3 +74,15 @@ double MPISensor::readFromHW(){
   // shift right three places
   return value >> 3;   
 }
+
+double USSensor::readFromHW(){
+  long howfar;
+  digitalWrite(trigger,LOW);
+  delayMicroseconds(5);                                                                              
+  digitalWrite(trigger,HIGH);
+  delayMicroseconds(15);
+  digitalWrite(trigger,LOW);
+  howfar=pulseIn(echo,HIGH);
+  howfar=howfar*0.01657; //how far away is the object in cm
+  return round(howfar);
+}

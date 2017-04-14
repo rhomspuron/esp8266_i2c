@@ -7,6 +7,9 @@
 #define SCLPIN 14
 #define MISOPIN 12
 
+#define trigger 13
+#define echo 16
+
 class BasicSensor{
   public:
     BasicSensor(double a=0, double b=1, 
@@ -50,4 +53,14 @@ class MPISensor : public BasicSensor{
     double readFromHW();
 };
 
+class USSensor : public BasicSensor{
+  public:
+    USSensor(int address, double a=1, double b=0, 
+              double v_min=-127, double v_max=128):
+              BasicSensor(a,b,v_min, v_max), 
+              address(address){};
+  private:
+    int address;
+    double readFromHW();
+};
 #endif
