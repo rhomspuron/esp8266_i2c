@@ -17,8 +17,10 @@
 #define GPIO_LED_ALARM 4  
 
 String readTemps(int presition=100);
+String readSensorTemp(int sensor_nr, int presition);
 String readStates();
 void checkStates();
+String readNrSensors();
 
 
 //**************************************************************//
@@ -128,6 +130,9 @@ void loop() {
           case STATE:
             com.sendData(readStates());
             break;           
+          case SENSORS:
+            com.sendData(readNrSensors());
+            break;
         }
     }
     else has_client = false;
@@ -140,6 +145,24 @@ void loop() {
 //                Functions                                     //
 //**************************************************************//
 
+String readSensorTemp(int sensor_nr, int precision){
+  String str_buff;
+  StringStream buff = StringStream(str_buff);
+  double value;
+  value = sensors[sensor_nr]->getValue();
+  buff.print(int(value),DEC);
+  buff.print(".");
+  unsigned int frac;
+  if(value >= 0)
+    frac = (value - int(value)) * precision;
+  else
+    frac = (int(value)- value ) * precision;
+  buff.print(frac,DEC) ;
+  
+  return str_buff;
+}
+//**************************************************************//
+
 String readTemps(int precision){
   String str_buff;
   StringStream buff = StringStream(str_buff);
@@ -148,35 +171,32 @@ String readTemps(int precision){
     buff.print("T");
     buff.print(i+1,DEC);
     buff.print(":");
-    value = sensors[i]->getValue();
-    buff.print(int(value),DEC);
-    buff.print(".");
-    unsigned int frac;
-    if(value >= 0)
-       frac = (value - int(value)) * precision;
-    else
-       frac = (int(value)- value ) * precision;
-    buff.print(frac,DEC) ;
+    buff.print(readSensorTemp(i,precision));
     buff.print(";");
     
   }
   buff.print("\n");
   return str_buff;
 }
-
 //**************************************************************//
+
 String readStates(){
   String str_buff;
+  bool alarm = false;
   StringStream buff = StringStream(str_buff);
   for(int i=0; i< nr_sensors; i++){
-    buff.print("T");
-    buff.print(i+1,DEC);
-    buff.print(":");
-    const char* value = sensors[i]->isOutOfRange()? "ALARM":"OK";
-    buff.print(value);
-    buff.print(";");
+    if (sensors[i]->isOutOfRange()){
+      alarm = true;
+      buff.print("T");
+      buff.print(i+1,DEC);
+      buff.print(":ALARM (");
+      buff.print(readSensorTemp(i,100));
+      buff.print("); ");
+    }
     
   }
+  if (!alarm)
+    buff.print('OK');
   buff.print("\n");
   return str_buff;
 }
@@ -199,6 +219,15 @@ void checkStates(){
   if (!flg_alarm)
     digitalWrite(GPIO_LED_ALARM, LOW);
   
+}
+//**************************************************************//
+String readNrSensors(){
+  String str_buff;
+  StringStream buff = StringStream(str_buff);
+  buff.print("Nr. Sensors:");
+  buff.print(nr_sensors,DEC);
+  buff.print("\n");
+  return str_buff;
 }
 
 
