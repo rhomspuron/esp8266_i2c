@@ -1,1 +1,4 @@
 pwds.h
+.idea
+*~
+*.pyc
