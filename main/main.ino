@@ -3,74 +3,73 @@
 
 #include "com.h"
 #include "sensors.h"
-#include "functions.h"
 #include "pwds.h"
-
-
-
 
 //**************************************************************//
 //                 Gloabals declarations                        //
 //**************************************************************//
 #define DEBUG true
 #define SERVER_PORT 23
-#define GPIO_LED_WIFI_CONNECTED 5  
-#define GPIO_LED_ALARM 4  
+#define GPIO_LED_WIFI_CONNECTED 13  
+#define GPIO_LED_ALARM 16  
+#define CS1PIN 15
+#define CS2PIN 0
+#define CS3PIN 2
 
-String readTemps();
+String readTemps(int presition=100);
+String readTempMpi(int presition=100);
 String readStates();
 void checkStates();
-
 
 //**************************************************************//
 //                Gloabals Variables                            //
 //**************************************************************//
-
 WiFiServer server(SERVER_PORT);
 WifiCom com;
 bool flg_alarm = false;
 
 SimulatorSensor st1(2.0,1.,0.,5.);
 BasicSensor st2;
-
-BasicSensor* sensors[] = {&st1,&st2};
-int nr_sensors = 2;
-
+TC74Sensor st3(0x48);
+TC74Sensor st4(0x4A);
+TC74Sensor st5(0x4B);
+TC74Sensor st6(0x4D);
+MPISensor st7(CS1PIN);
+MPISensor st8(CS2PIN);
+MPISensor st9(CS3PIN);
+BasicSensor* sensors[] = {&st1,&st2,&st3,&st4,&st5,&st6,&st7,&st8,&st9};
+int nr_sensors = 9;
 
 //**************************************************************//
 //                Setup Method                                  //
 //**************************************************************//
-
 void setup() {
   bool wifi_searching = true;
-  
   // Prepare logger for debug 
   if (DEBUG){
     Serial.begin(115200);
     delay(50);
     Serial.print('Connecting to: ');
     Serial.println(ssid);
-
   }
   // Configure LED_WIFI
   pinMode(GPIO_LED_WIFI_CONNECTED, OUTPUT);
   digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW);
+    //Configure LED ALARM
+  pinMode(GPIO_LED_ALARM, OUTPUT);
+  digitalWrite(GPIO_LED_ALARM, LOW); 
   
   // Connect to the Wifi
   // TODO: Activate Wifi LED
   WiFi.begin(ssid, password);
   uint8_t i = 0;
-  while(true){
-    if (i++ < 20){ // Nr of intents 
-      if (WiFi.status() == WL_CONNECTED) break;
-      //digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
-      delay(500);
-      //digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW); 
-    } 
- 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
-  //digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
-
+  Serial.println("");
+  Serial.println("WiFi connected");
+  
   //Start Telnet server
   server.begin();
   server.setNoDelay(true);
@@ -79,41 +78,31 @@ void setup() {
     Serial.print(WiFi.localIP());
     Serial.println(" 23' to connect");
   }
-
-  //Start I2C bus master
-  Wire.begin();
-  
-  //Configure LED ALARM
-  pinMode(GPIO_LED_ALARM, OUTPUT);
-  digitalWrite(GPIO_LED_ALARM, LOW);
-    
+ 
 }
 
 //**************************************************************//
 //                Main Loop Method                              //
 //**************************************************************//
-
 void loop() { 
   bool has_client = false;
   checkStates();
-
   if (server.hasClient()){
     WiFiClient tmp = server.available();
     com = tmp;
     tmp.stop();
     has_client = true;
   }
-  
-  
+
   while(has_client){
     if (com.isConnected()){
-      checkStates;()
+      checkStates();
       Cmds cmd = com.getCommand();
       if (cmd != NONE)
         switch (cmd){
           case TEMP: 
             com.sendData(readTemps());
-            break;
+            break;  
           case CONFIG: 
             com.sendData(String("Not implemented.\n")); 
             break;
@@ -130,15 +119,12 @@ void loop() {
     }
     else has_client = false;
    }
-   
 }
-
 
 //**************************************************************//
 //                Functions                                     //
 //**************************************************************//
-
-String readTemps(){
+String readTemps(int precision){
   String str_buff;
   StringStream buff = StringStream(str_buff);
   double value;
@@ -147,13 +133,21 @@ String readTemps(){
     buff.print(i+1,DEC);
     buff.print(":");
     value = sensors[i]->getValue();
-    buff.print(value, DEC);
+    buff.print(int(value),DEC);
+    buff.print(".");
+    unsigned int frac;
+    if(value >= 0)
+       frac = (value - int(value)) * precision;
+    else
+       frac = (int(value)- value ) * precision;
+    buff.print(frac,DEC) ;
     buff.print(";");
     
   }
   buff.print("\n");
   return str_buff;
 }
+
 
 //**************************************************************//
 String readStates(){
@@ -165,12 +159,12 @@ String readStates(){
     buff.print(":");
     const char* value = sensors[i]->isOutOfRange()? "ALARM":"OK";
     buff.print(value);
-    buff.print(";");
-    
+    buff.print(";"); 
   }
   buff.print("\n");
   return str_buff;
 }
+
 //**************************************************************//
 void checkStates(){
   flg_alarm = false;
@@ -189,9 +183,4 @@ void checkStates(){
   }
   if (!flg_alarm)
     digitalWrite(GPIO_LED_ALARM, LOW);
-  
 }
-
-
-
-
