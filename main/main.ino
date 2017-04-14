@@ -11,12 +11,12 @@
 //**************************************************************//
 //                 Gloabals declarations                        //
 //**************************************************************//
-#define DEBUG true
+#define DEBUG false
 #define SERVER_PORT 23
 #define GPIO_LED_WIFI_CONNECTED 5  
 #define GPIO_LED_ALARM 4  
 
-String readTemps();
+String readTemps(int presition=100);
 String readStates();
 void checkStates();
 
@@ -31,12 +31,15 @@ bool flg_alarm = false;
 
 SimulatorSensor st1(2.0,1.,0.,5.);
 BasicSensor st2;
-I2CSensor st3(0x4B,1,1,0,0,30);
-I2CSensor st4(0x4D,1,1,0,0,30);
+TC74Sensor st3(0x48);
+TC74Sensor st4(0x4A);
+TC74Sensor st5(0x4B);
+TC74Sensor st6(0x4D);
 
 
-BasicSensor* sensors[] = {&st1,&st2,&st3,&st4};
-int nr_sensors = 2;
+
+BasicSensor* sensors[] = {&st1,&st2,&st3,&st4,&st5,&st6};
+int nr_sensors = 6;
 
 
 //**************************************************************//
@@ -82,9 +85,7 @@ void setup() {
     Serial.println(" 23' to connect");
   }
 
-  //Start I2C bus master
-  Wire.begin();
-  
+
   //Configure LED ALARM
   pinMode(GPIO_LED_ALARM, OUTPUT);
   digitalWrite(GPIO_LED_ALARM, LOW);
@@ -105,8 +106,7 @@ void loop() {
     tmp.stop();
     has_client = true;
   }
-  
-  
+
   while(has_client){
     if (com.isConnected()){
       checkStates();
@@ -140,7 +140,7 @@ void loop() {
 //                Functions                                     //
 //**************************************************************//
 
-String readTemps(){
+String readTemps(int precision){
   String str_buff;
   StringStream buff = StringStream(str_buff);
   double value;
@@ -149,7 +149,14 @@ String readTemps(){
     buff.print(i+1,DEC);
     buff.print(":");
     value = sensors[i]->getValue();
-    buff.print(value, DEC);
+    buff.print(int(value),DEC);
+    buff.print(".");
+    unsigned int frac;
+    if(value >= 0)
+       frac = (value - int(value)) * precision;
+    else
+       frac = (int(value)- value ) * precision;
+    buff.print(frac,DEC) ;
     buff.print(";");
     
   }

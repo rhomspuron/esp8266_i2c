@@ -20,19 +20,34 @@ double SimulatorSensor::readFromHW(){
   return 3.14;
 }
 
-double I2CSensor::readFromHW(){
-  char buff[nrBytes];
-  int value =0;       
-  Wire.beginTransmission(address);
-  Wire.requestFrom(address, nrBytes);
-  for(int i=0; i< nrBytes; i++){
-    buff[i]=Wire.read();
+double TC74Sensor::readFromHW(){
+  //start the communication with IC with the address xx
+  Wire.begin();
+  Wire.beginTransmission((uint8_t)address); 
+  //send a bit and ask for register zero
+  Wire.write((uint8_t) 0);
+  //end transmission
+  int error = Wire.endTransmission();
+  if (error != 0){
+    return -1e9;
   }
-  Wire.endTransmission();
-  //TODO convert char to int
-  value = int(buff[0]);
-  
-  return double(value); 
+  //request 1 byte from address xx
+  Wire.requestFrom((uint8_t)address, (uint8_t)1);
+
+  //To detect the error.
+  int temp = 1e9;
+  for (int i=0; i < 3; i++){
+    if (Wire.available() == 0){
+      delay(10);    
+    }
+    else{
+      temp = Wire.read();
+      if (temp > 127)
+        temp -= 256;
+    }
+  }
+  return double(temp);
+    
 }
 
 

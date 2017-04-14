@@ -26,15 +26,14 @@ class SimulatorSensor: public BasicSensor{
     double readFromHW();
 };
 
-class I2CSensor : public BasicSensor{
+class TC74Sensor : public BasicSensor{
   public:
-    I2CSensor(int address, int nrBytes=2, double a=0, double b=1, 
-              double v_min=-200, double v_max=200):
+    TC74Sensor(int address, double a=1, double b=0, 
+              double v_min=-127, double v_max=128):
               BasicSensor(a,b,v_min, v_max), 
-              address(address), nrBytes(nrBytes){};
+              address(address){};
   private:
     int address;
-    int nrBytes;  
     double readFromHW();
 };
 
