@@ -59,14 +59,24 @@ bool WifiCom::isCmdValid(){
   //TODO Implement the protocol
   if (str == "TEMP")
     cmd = TEMP;
+  else if (str == "SENSORS")
+    cmd = SENSORS;
   else if (str == "STATE")
     cmd = STATE;
   else if(str == "CONFIG")
     cmd = CONFIG;
-  else if(str == "DI")
-    cmd = DI;
-  else if(str == "DO")
-    cmd = DO;
+  else if(str == "FIND")
+    cmd = FIND;
+  else if(str == "FOUND")
+    cmd = FOUND;
+  else if(str == "LIVE")
+    cmd = LIVE;
+  else if(str == "ON")
+    cmd = ON;
+  else if(str == "ADC")
+    cmd = ADC;  
+  else if(str == "BLINK")
+    cmd = BLINK;   
   else{
     cmd = NONE;
   }
