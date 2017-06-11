@@ -253,6 +253,7 @@ void checkStates(){
       break;
     } 
   }
+<<<<<<< HEAD
    if (vivo==1){
     digitalWrite(GPIO_LED_WIFI_CONNECTED, true);
     delay (200);
@@ -277,3 +278,8 @@ String readNrSensors(){
 
 
 
+=======
+  if (!flg_alarm)
+    digitalWrite(GPIO_LED_ALARM, LOW);
+}
+>>>>>>> origin/master
