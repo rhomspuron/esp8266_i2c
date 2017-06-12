@@ -1,12 +1,22 @@
+//**************************************************************//
+// Pin descriptions
+// 0 -> Alarm Reley
+// 1 -> TODO  
+// 2 -> Buzzer
+// 3 -> TODO
+// 4 -> MISO
+// 5 -> CLK
+// 6 .. 14-> TOTO  
+// 15 -> Switch
+// 16 -> LED WiFi
+//**************************************************************//
+
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 
 #include "com.h"
 #include "sensors.h"
 #include "pwds.h"
-
-
-
 
 //**************************************************************//
 //                 Gloabals declarations                        //
