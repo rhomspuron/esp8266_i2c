@@ -26,8 +26,8 @@
 #define GPIO_LED_WIFI_CONNECTED 5  
 #define GPIO_LED_ALARM 4  
 
+String double2str(double value, int presition=100)
 String readTemps(int presition=100);
-String readSensorTemp(int sensor_nr, int presition);
 String readStates();
 void checkStates();
 String readNrSensors();
@@ -155,11 +155,10 @@ void loop() {
 //                Functions                                     //
 //**************************************************************//
 
-String readSensorTemp(int sensor_nr, int precision){
+String double2str(double value, int precision){
   String str_buff;
   StringStream buff = StringStream(str_buff);
   double value;
-  value = sensors[sensor_nr]->getValue();
   buff.print(int(value),DEC);
   buff.print(".");
   unsigned int frac;
@@ -178,10 +177,11 @@ String readTemps(int precision){
   StringStream buff = StringStream(str_buff);
   double value;
   for(int i=0; i< nr_sensors; i++){
+    value = sensors[i]->getValue()
     buff.print("T");
     buff.print(i+1,DEC);
     buff.print(":");
-    buff.print(readSensorTemp(i,precision));
+    buff.print(double2str(value, precision));
     buff.print(";");
     
   }
