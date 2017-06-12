@@ -6,7 +6,7 @@
 
 #define MAX_READ_BUFFER 20
 
-enum Cmds{NONE=0,TEMP,STATE,CONFIG,DI,DO,SENSORS};
+enum Cmds{NONE=0,TEMP,STATE,CONFIG,FIND,FOUND,SENSORS};
 
 class WifiCom {
   public:

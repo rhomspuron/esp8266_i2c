@@ -65,10 +65,10 @@ bool WifiCom::isCmdValid(){
     cmd = STATE;
   else if(str == "CONFIG")
     cmd = CONFIG;
-  else if(str == "DI")
-    cmd = DI;
-  else if(str == "DO")
-    cmd = DO;
+  else if (str == "FIND")
+    cmd = FIND;
+  else if(str == "FOUND")
+    cmd = FOUND;
   else{
     cmd = NONE;
   }

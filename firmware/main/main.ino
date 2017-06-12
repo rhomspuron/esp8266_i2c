@@ -22,16 +22,20 @@
 //                 Gloabals declarations                        //
 //**************************************************************//
 #define DEBUG false
+#define BUZZER_ON LOW
+#define BUZZER_OFF HIGH
 #define SERVER_PORT 23
 #define GPIO_LED_WIFI_CONNECTED 5  
-#define GPIO_LED_ALARM 4  
+#define GPIO_BUZZ_ALARM 2  
 
-String double2str(double value, int presition=100)
+
+String double2str(double value, int presition=100);
 String readTemps(int presition=100);
 String readStates();
 void checkStates();
 String readNrSensors();
-
+void findStart();
+void findStop();
 
 //**************************************************************//
 //                Gloabals Variables                            //
@@ -40,6 +44,7 @@ String readNrSensors();
 WiFiServer server(SERVER_PORT);
 WifiCom com;
 bool flg_alarm = false;
+bool flg_finding = false;
 
 SimulatorSensor st1(2.0,1.,0.,5.);
 BasicSensor st2;
@@ -99,8 +104,8 @@ void setup() {
 
 
   //Configure LED ALARM
-  pinMode(GPIO_LED_ALARM, OUTPUT);
-  digitalWrite(GPIO_LED_ALARM, LOW);
+  pinMode(GPIO_BUZZ_ALARM, OUTPUT);
+  digitalWrite(GPIO_BUZZ_ALARM, LOW);
     
 }
 
@@ -131,11 +136,11 @@ void loop() {
           case CONFIG: 
             com.sendData(String("Not implemented.\n")); 
             break;
-          case DI: 
-            com.sendData(String("DI1 High; DI2 Low;\n")); 
+          case FIND: 
+            findStart();
             break;
-          case DO:
-            com.sendData(String("Not implemented\n"));
+          case FOUND:
+            findStop();
             break;
           case STATE:
             com.sendData(readStates());
@@ -158,7 +163,6 @@ void loop() {
 String double2str(double value, int precision){
   String str_buff;
   StringStream buff = StringStream(str_buff);
-  double value;
   buff.print(int(value),DEC);
   buff.print(".");
   unsigned int frac;
@@ -177,7 +181,7 @@ String readTemps(int precision){
   StringStream buff = StringStream(str_buff);
   double value;
   for(int i=0; i< nr_sensors; i++){
-    value = sensors[i]->getValue()
+    value = sensors[i]->getValue();
     buff.print("T");
     buff.print(i+1,DEC);
     buff.print(":");
@@ -193,6 +197,7 @@ String readTemps(int precision){
 String readStates(){
   String str_buff;
   bool alarm = false;
+  double value;
   StringStream buff = StringStream(str_buff);
   for(int i=0; i< nr_sensors; i++){
     if (sensors[i]->isOutOfRange()){
@@ -200,13 +205,19 @@ String readStates(){
       buff.print("T");
       buff.print(i+1,DEC);
       buff.print(":ALARM (");
-      buff.print(readSensorTemp(i,100));
+      value = sensors[i]->getValue();
+      buff.print(double2str(value));
       buff.print("); ");
     }
     
   }
   if (!alarm)
     buff.print('OK');
+  if(flg_finding)
+    buff.print("; Finding: True");
+  else
+    buff.print("; Finding: False");
+    
   buff.print("\n");
   return str_buff;
 }
@@ -226,9 +237,7 @@ void checkStates(){
       break;
     } 
   }
-  if (!flg_alarm)
-    digitalWrite(GPIO_LED_ALARM, LOW);
-  
+   
 }
 //**************************************************************//
 String readNrSensors(){
@@ -239,6 +248,18 @@ String readNrSensors(){
   buff.print("\n");
   return str_buff;
 }
+//**************************************************************//
+void findStart(){
+  flg_finding = true;
+  digitalWrite(GPIO_BUZZ_ALARM, BUZZER_ON);
+}
+//**************************************************************//
+void findStop(){
+  flg_finding = false;
+  digitalWrite(GPIO_BUZZ_ALARM, BUZZER_OFF);
+}
+
+
 
 
 
