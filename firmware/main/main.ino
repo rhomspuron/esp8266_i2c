@@ -25,7 +25,7 @@
 #define BUZZER_ON LOW
 #define BUZZER_OFF HIGH
 #define SERVER_PORT 23
-#define GPIO_LED_WIFI_CONNECTED 5  
+#define GPIO_LED_WIFI_CONNECTED 16  
 #define GPIO_BUZZ_ALARM 2  
 
 
