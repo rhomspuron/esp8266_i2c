@@ -37,5 +37,15 @@ class TC74Sensor : public BasicSensor{
     double readFromHW();
 };
 
+class ADCSensor : public BasicSensor{
+  public:
+    ADCSensor(int address, double a=1, double b=0, 
+              double v_min=0, double v_max=5):
+              BasicSensor(a,b,v_min, v_max), 
+              adc_channel(address){};
+  private:
+    int adc_channel;
+    double readFromHW();
+};
 
 #endif

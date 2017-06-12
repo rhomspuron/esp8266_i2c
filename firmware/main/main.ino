@@ -46,17 +46,16 @@ WifiCom com;
 bool flg_alarm = false;
 bool flg_finding = false;
 
-SimulatorSensor st1(2.0,1.,0.,5.);
-BasicSensor st2;
-TC74Sensor st3(0x48);
-TC74Sensor st4(0x4A);
-TC74Sensor st5(0x4B);
-TC74Sensor st6(0x4D);
+ADCSensor st1(A0);
+TC74Sensor st2(0x48);
+TC74Sensor st3(0x4A);
+TC74Sensor st4(0x4B);
+TC74Sensor st5(0x4D);
 
 
 
-BasicSensor* sensors[] = {&st1,&st2,&st3,&st4,&st5,&st6};
-int nr_sensors = 6;
+BasicSensor* sensors[] = {&st1,&st2,&st3,&st4,&st5};
+int nr_sensors = 5;
 
 
 //**************************************************************//

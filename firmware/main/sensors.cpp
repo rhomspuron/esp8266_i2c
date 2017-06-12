@@ -50,6 +50,10 @@ double TC74Sensor::readFromHW(){
     
 }
 
+double ADCSensor::readFromHW(){
+  return analogRead(adc_channel); 
+}
+
 
 
 
