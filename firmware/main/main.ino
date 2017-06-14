@@ -68,15 +68,14 @@ void setup() {
   // Prepare logger for debug 
   if (DEBUG){
     Serial.begin(115200);
-    delay(50);
+    delay(100);
     Serial.print('Connecting to: ');
     Serial.println(ssid);
 
   }
   // Configure LED_WIFI
   pinMode(GPIO_LED_WIFI_CONNECTED, OUTPUT);
-  digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW);
-  
+ 
   // Connect to the Wifi
   // TODO: Activate Wifi LED
   WiFi.begin(ssid, password);
@@ -84,13 +83,20 @@ void setup() {
   while(true){
     if (i++ < 20){ // Nr of intents 
       if (WiFi.status() == WL_CONNECTED) break;
-      //digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
-      delay(500);
-      //digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW); 
+      digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
+      delay(250);
+      digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW);
+      delay(250); 
     } 
- 
+    else{
+      digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
+      if (DEBUG && wifi_searching){
+        Serial.print('Can not connect');
+        wifi_searching = false;
+      } 
+    }
   }
-  //digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
+  digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW);
 
   //Start Telnet server
   server.begin();
@@ -104,7 +110,7 @@ void setup() {
 
   //Configure LED ALARM
   pinMode(GPIO_BUZZ_ALARM, OUTPUT);
-  digitalWrite(GPIO_BUZZ_ALARM, LOW);
+  digitalWrite(GPIO_BUZZ_ALARM, BUZZER_OFF);
     
 }
 
@@ -229,7 +235,7 @@ void checkStates(){
         Serial.print("T");
         Serial.print(i+1, DEC);
         Serial.println("OutOfRange");
-        Serial.print(readTemps());
+        //Serial.print(readTemps());
       }
       //digitalWrite(GPIO_LED_ALARM, HIGH);
       flg_alarm = true;
