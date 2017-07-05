@@ -37,7 +37,7 @@ String readNrSensors();
 void findStart();
 void findStop();
 void printDebug(String value, bool endl=false);
-
+void printWifiInfo();
 
 //**************************************************************//
 //                Gloabals Variables                            //
@@ -72,8 +72,6 @@ void setup() {
     Serial.begin(115200);
     delay(100);
   }
-  printDebug("Connecting to: ");
-  printDebug(ssid, true);
   
   // Configure LED_WIFI
   pinMode(GPIO_LED_WIFI_CONNECTED, OUTPUT);
@@ -82,8 +80,10 @@ void setup() {
   // TODO: Activate Wifi LED
   WiFi.begin(ssid, password);
   uint8_t i = 0;
+  printDebug("Connecting");
   while(true){
     if (i++ < 20){ // Nr of intents 
+      printDebug(".");
       if (WiFi.status() == WL_CONNECTED) break;
       digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
       delay(250);
@@ -93,21 +93,21 @@ void setup() {
     else{
       digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
       if (wifi_searching){
-        printDebug("Can not connect");
+        printDebug("Can not connect to:");
+        printDebug(ssid, true);
         wifi_searching = false;
       } 
     }
   }
   digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW);
 
+  printWifiInfo();
+  
   //Start Telnet server
   server.begin();
   server.setNoDelay(true);
-  printDebug("Ready. To use: 'telnet ");
-  printDebug(WiFi.localIP().toString());
-  printDebug(" 23' to connect", true);
   
-
+  
   //Configure LED ALARM
   pinMode(GPIO_BUZZ_ALARM, OUTPUT);
   digitalWrite(GPIO_BUZZ_ALARM, BUZZER_OFF);
@@ -274,7 +274,27 @@ void printDebug(String value, bool endl){
     Serial.print("\n");
 }
 //**************************************************************//
-
+void printWifiInfo(){
+  printDebug("\n\n");
+  printDebug("Connected to: ");
+  printDebug(ssid, true);
+  
+  String str_buff;
+  byte mac[6];  
+  StringStream buff = StringStream(str_buff);
+  WiFi.macAddress(mac);
+  buff.print("MAC: ");
+  for(int i=5; i>=0; i--){
+    buff.print(mac[i], HEX);
+    if (i!=0)
+      buff.print(':'); 
+  }
+  printDebug(str_buff, true);
+  printDebug("IP: ");
+  printDebug(WiFi.localIP().toString(), true);
+  printDebug("To connect use: 'telnet IP 23'", true);
+  
+}
 
 
 
