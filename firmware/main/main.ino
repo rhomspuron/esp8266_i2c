@@ -21,7 +21,7 @@
 //**************************************************************//
 //                 Gloabals declarations                        //
 //**************************************************************//
-#define DEBUG false
+#define DEBUG true
 #define BUZZER_ON LOW
 #define BUZZER_OFF HIGH
 #define SERVER_PORT 23
@@ -36,6 +36,8 @@ void checkStates();
 String readNrSensors();
 void findStart();
 void findStop();
+void printDebug(String value, bool endl=false);
+
 
 //**************************************************************//
 //                Gloabals Variables                            //
@@ -69,10 +71,10 @@ void setup() {
   if (DEBUG){
     Serial.begin(115200);
     delay(100);
-    Serial.print('Connecting to: ');
-    Serial.println(ssid);
-
   }
+  printDebug("Connecting to: ");
+  printDebug(ssid, true);
+  
   // Configure LED_WIFI
   pinMode(GPIO_LED_WIFI_CONNECTED, OUTPUT);
  
@@ -90,8 +92,8 @@ void setup() {
     } 
     else{
       digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
-      if (DEBUG && wifi_searching){
-        Serial.print('Can not connect');
+      if (wifi_searching){
+        printDebug("Can not connect");
         wifi_searching = false;
       } 
     }
@@ -101,12 +103,10 @@ void setup() {
   //Start Telnet server
   server.begin();
   server.setNoDelay(true);
-  if (DEBUG){
-    Serial.print("Ready!\nUse 'telnet ");
-    Serial.print(WiFi.localIP());
-    Serial.println(" 23' to connect");
-  }
-
+  printDebug("Ready. To use: 'telnet ");
+  printDebug(WiFi.localIP().toString());
+  printDebug(" 23' to connect", true);
+  
 
   //Configure LED ALARM
   pinMode(GPIO_BUZZ_ALARM, OUTPUT);
@@ -195,6 +195,8 @@ String readTemps(int precision){
     
   }
   buff.print("\n");
+  printDebug("readTemps: ");
+  printDebug(str_buff);
   return str_buff;
 }
 //**************************************************************//
@@ -224,6 +226,8 @@ String readStates(){
     buff.print("; Finding: False");
     
   buff.print("\n");
+  printDebug("readStates: ");
+  printDebug(str_buff);
   return str_buff;
 }
 //**************************************************************//
@@ -231,12 +235,6 @@ void checkStates(){
   flg_alarm = false;
   for(int i=0; i< nr_sensors; i++){
     if (sensors[i]->isOutOfRange()){
-      if(DEBUG){
-        Serial.print("T");
-        Serial.print(i+1, DEC);
-        Serial.println("OutOfRange");
-        //Serial.print(readTemps());
-      }
       //digitalWrite(GPIO_LED_ALARM, HIGH);
       flg_alarm = true;
       break;
@@ -251,19 +249,31 @@ String readNrSensors(){
   buff.print("Nr. Sensors:");
   buff.print(nr_sensors,DEC);
   buff.print("\n");
+  
+  printDebug("readNrSensors");
+  printDebug(str_buff);
   return str_buff;
 }
 //**************************************************************//
 void findStart(){
   flg_finding = true;
   digitalWrite(GPIO_BUZZ_ALARM, BUZZER_ON);
+  printDebug("findStart: Buzzer ON", true);
 }
 //**************************************************************//
 void findStop(){
   flg_finding = false;
   digitalWrite(GPIO_BUZZ_ALARM, BUZZER_OFF);
+  printDebug("findStop: Buzzer OFF", true);
 }
-
+//**************************************************************//
+void printDebug(String value, bool endl){
+  if (!DEBUG) return;
+  Serial.print(value);
+  if (endl)
+    Serial.print("\n");
+}
+//**************************************************************//
 
 
 
