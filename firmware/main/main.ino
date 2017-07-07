@@ -39,6 +39,7 @@ void findStop();
 void printDebug(String value, bool endl=false);
 void printWifiInfo();
 
+
 //**************************************************************//
 //                Gloabals Variables                            //
 //**************************************************************//
@@ -82,13 +83,14 @@ void setup() {
   uint8_t i = 0;
   printDebug("Connecting");
   while(true){
-    if (i++ < 20){ // Nr of intents 
+    if (i < 20){ // Nr of intents 
       printDebug(".");
       if (WiFi.status() == WL_CONNECTED) break;
       digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
       delay(250);
       digitalWrite(GPIO_LED_WIFI_CONNECTED, LOW);
-      delay(250); 
+      delay(250);
+      i++ ;
     } 
     else{
       digitalWrite(GPIO_LED_WIFI_CONNECTED, HIGH);
@@ -96,6 +98,7 @@ void setup() {
         printDebug("Can not connect to:");
         printDebug(ssid, true);
         wifi_searching = false;
+    
       } 
     }
   }
@@ -284,9 +287,9 @@ void printWifiInfo(){
   StringStream buff = StringStream(str_buff);
   WiFi.macAddress(mac);
   buff.print("MAC: ");
-  for(int i=5; i>=0; i--){
+  for(int i=0; i<6; i++){
     buff.print(mac[i], HEX);
-    if (i!=0)
+    if (i!=5)
       buff.print(':'); 
   }
   printDebug(str_buff, true);
@@ -295,7 +298,7 @@ void printWifiInfo(){
   printDebug("To connect use: 'telnet IP 23'", true);
   
 }
-
+//**************************************************************//
 
 
 
