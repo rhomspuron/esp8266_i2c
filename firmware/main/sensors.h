@@ -3,7 +3,7 @@
 
 #include <ESP8266WiFi.h>
 #include <Wire.h>
-
+#include "max31855.h"
 
 class BasicSensor{
   public:
@@ -46,6 +46,18 @@ class ADCSensor : public BasicSensor{
   private:
     int adc_channel;
     double readFromHW();
+};
+
+class Max31855Sensor: public BasicSensor{
+  public:
+    Max31855Sensor(int8_t cs, double a=1, double b=0, 
+              double v_min=-1000, double v_max=1000):
+              BasicSensor(a,b,v_min, v_max),
+              sensor(cs){};
+  private:
+    MAX31855 sensor;
+    double readFromHW();
+                
 };
 
 #endif

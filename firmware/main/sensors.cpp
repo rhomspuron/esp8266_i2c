@@ -50,6 +50,10 @@ double TC74Sensor::readFromHW(){
     
 }
 
+double Max31855Sensor::readFromHW(){
+  return sensor.readThermocouple();
+}
+
 double ADCSensor::readFromHW(){
   return analogRead(adc_channel); 
 }

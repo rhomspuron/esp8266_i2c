@@ -27,6 +27,8 @@
 #define SERVER_PORT 23
 #define GPIO_LED_WIFI_CONNECTED 16  
 #define GPIO_BUZZ_ALARM 2  
+#define GPIO_CS_1 4
+#define GPIO_CS_2 5
 
 
 String double2str(double value, int presition=100);
@@ -50,15 +52,17 @@ bool flg_alarm = false;
 bool flg_finding = false;
 
 ADCSensor st1(A0);
+//Max31855Sensor st2(GPIO_CS_1);
+//Max31855Sensor st3(GPIO_CS_2);
+
 TC74Sensor st2(0x48);
 TC74Sensor st3(0x4A);
-TC74Sensor st4(0x4B);
-TC74Sensor st5(0x4D);
+//TC74Sensor st4(0x4B);
+//TC74Sensor st5(0x4D);
 
 
-
-BasicSensor* sensors[] = {&st1,&st2,&st3,&st4,&st5};
-int nr_sensors = 5;
+BasicSensor* sensors[] = {&st1,&st2,&st3}; //,&st4,&st5};
+int nr_sensors = 3; //5;
 
 
 //**************************************************************//
@@ -124,7 +128,6 @@ void setup() {
 void loop() { 
   bool has_client = false;
   checkStates();
-
   if (server.hasClient()){
     WiFiClient tmp = server.available();
     com = tmp;
