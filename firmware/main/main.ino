@@ -307,6 +307,8 @@ void printDebug(String value, bool endl){
 }
 //**************************************************************//
 void printWifiInfo(){
+  if(!DEBUG) return;
+    
   printDebug("\n\n");
   printDebug("Connected to: ");
   printDebug(ssid, true);
