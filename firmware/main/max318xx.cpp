@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 **************************************************************/
 
-#include "max31855.h"
+#include "max318xx.h"
 
 BasicCS::BasicCS(int8_t cs): cs(cs){
   

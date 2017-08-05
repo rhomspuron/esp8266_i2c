@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <ESP8266WiFi.h>
 #include <Wire.h>
-#include "max31855.h"
+#include "max318xx.h"
 
 class BasicSensor{
   public:
