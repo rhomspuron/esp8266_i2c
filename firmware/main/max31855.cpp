@@ -25,21 +25,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "max31855.h"
 
-MAX31855::MAX31855(int8_t cs, int8_t sck, int8_t miso):
+BasicCS::BasicCS(int8_t cs): cs(cs){
+  
+  pinMode(cs, OUTPUT);
+  setHigh();
+}
+
+void BasicCS::setHigh(){
+  digitalWrite(cs, HIGH);
+  output_high = true;
+  delay(1);
+}
+
+void BasicCS::setLow(){
+  digitalWrite(cs, LOW);
+  output_high = true;
+  delay(1);
+}
+
+bool BasicCS::isHigh(){
+  return output_high;
+}
+
+bool BasicCS::isLow(){
+  return output_high;
+}
+
+
+MAX31855::MAX31855(BasicCS cs, int8_t sck, int8_t miso):
                    cs(cs), sck(sck), miso(miso){
 
   // Software SPI
-  pinMode(cs, OUTPUT);
-  digitalWrite(cs, HIGH);
-
   pinMode(sck, OUTPUT);
   pinMode(miso, INPUT);
 }
 
-MAX31855::MAX31855(int8_t cs): cs(cs), sck(-1), miso(-1){
+MAX31855::MAX31855(BasicCS cs): cs(cs), sck(-1), miso(-1){
   
-  pinMode(cs, OUTPUT);
-  digitalWrite(cs, HIGH);
   SPI.begin();
   
 }
@@ -72,8 +94,7 @@ void MAX31855::updateValues(){
   uint32_t data = 0;
 
   // Read 32 bits data
-  digitalWrite(cs, LOW);
-  delay(1);
+  cs.setLow();
   if (sck == -1){
     // Hardware SPI
     SPI.beginTransaction(SPISettings(MAX_FREQ, BITS_ORDER, SPI_MODE));
@@ -102,8 +123,8 @@ void MAX31855::updateValues(){
       delay(0.001);
     }
   }
-  digitalWrite(cs, HIGH);
-
+  cs.setHigh();
+  
   /* Process data bits:
    *  31 -> 18: Thermocouple temperature 31=sign, 30=2^10, 18=2^-2
    *  17: No used

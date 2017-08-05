@@ -32,10 +32,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SPI_MODE SPI_MODE0
 #define BITS_ORDER MSBFIRST
 
+class BasicCS{
+  public:
+    BasicCS(int8_t cs);
+    bool isHigh();
+    bool isLow();
+    virtual void setHigh();
+    virtual void setLow();
+  private:
+    int8_t cs;
+    bool output_high;
+      
+};
+
 class MAX31855{
   public:
-    MAX31855(int8_t cs, int8_t sck, int8_t miso);
-    MAX31855(int8_t cs);
+    MAX31855(BasicCS cs, int8_t sck, int8_t miso);
+    MAX31855(BasicCS cs);
    
     double readThermocouple();
     double readInternal();
@@ -45,7 +58,8 @@ class MAX31855{
     bool isFault(); 
     
   private:
-    int8_t cs, sck, miso;
+    BasicCS cs;
+    int8_t sck, miso;
     double thermocouple, internal;
     bool short_vcc;
     bool short_gnd;
