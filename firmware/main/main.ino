@@ -78,13 +78,14 @@ bool flg_alarm = false;
 bool flg_finding = false;
 
 ADCSensor st1(A0);
-//Max31855Sensor st2(GPIO_CS_1);
-//Max31855Sensor st3(GPIO_CS_2);
 
-TC74Sensor st2(0x48);
-TC74Sensor st3(0x4A);
-//TC74Sensor st4(0x4B);
-//TC74Sensor st5(0x4D);
+Max31855Sensor st2(BasicCS(GPIO_CS_1));
+Max31855Sensor st3(BasicCS(GPIO_CS_2));
+
+TC74Sensor st4(0x48);
+TC74Sensor st5(0x4A);
+TC74Sensor st6(0x4B);
+TC74Sensor st7(0x4D);
 
 
 BasicSensor* sensors[] = {&st1,&st2,&st3}; //,&st4,&st5};
