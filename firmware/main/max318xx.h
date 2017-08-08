@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MAX31855_H
 
 #include <SPI.h>
+#include <Wire.h>
 
 #define MAX_FREQ 8000000 // 8MHZ
 #define SPI_MODE SPI_MODE0
@@ -34,15 +35,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class BasicCS{
   public:
-    BasicCS(int8_t cs);
-    bool isHigh();
-    bool isLow();
-    virtual void setHigh();
-    virtual void setLow();
+    BasicCS() {};
+    BasicCS(byte gpio);
+    void setHigh() {setValue(true);};
+    void setLow() {setValue(false);};
   private:
-    int8_t cs;
-    bool output_high;
-      
+    virtual void setValue(bool value);
+    byte gpio;
+    
+};
+
+class Pcf8574CS: public BasicCS{
+  public:
+    Pcf8574CS(int addr, uint8_t pin);
+  private:
+    int addr;
+    uint8_t pin;
+    void setValue(bool value);
 };
 
 class MAX31855{

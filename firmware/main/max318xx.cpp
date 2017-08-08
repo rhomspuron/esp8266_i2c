@@ -25,32 +25,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "max318xx.h"
 
-BasicCS::BasicCS(int8_t cs): cs(cs){
-  
-  pinMode(cs, OUTPUT);
+BasicCS::BasicCS(byte gpio):gpio(gpio){
+  pinMode(gpio, OUTPUT);
   setHigh();
 }
 
-void BasicCS::setHigh(){
-  digitalWrite(cs, HIGH);
-  output_high = true;
+void BasicCS::setValue(bool value){
+  digitalWrite(gpio, value);
   delay(1);
 }
 
-void BasicCS::setLow(){
-  digitalWrite(cs, LOW);
-  output_high = true;
-  delay(1);
+Pcf8574CS::Pcf8574CS(int addr, uint8_t pin): 
+  addr(addr), pin(pin)
+{
+    Wire.begin();
 }
 
-bool BasicCS::isHigh(){
-  return output_high;
+void Pcf8574CS::setValue(bool value){
+  uint8_t data;
+  Wire.beginTransmission(addr);
+  Wire.requestFrom(addr, 1);
+  data = Wire.read();
+  if(value)
+    data &= ~(1<<pin);
+  else
+    data |= (1<<pin);
+  Wire.write(data);
+  Wire.endTransmission();
 }
-
-bool BasicCS::isLow(){
-  return output_high;
-}
-
 
 MAX31855::MAX31855(BasicCS cs, int8_t sck, int8_t miso):
                    cs(cs), sck(sck), miso(miso){
