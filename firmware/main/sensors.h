@@ -1,6 +1,6 @@
 
 /*********************************************************************
-Arduino project for a remote temperature sensor base on ESP8266. 
+ESP8266ARS: Arduino project for ALBA Remote Sensors base on ESP8266.
 
 Autors: Roberto J. Homs Puron <rhoms@cells.es>, 
         Alberto Rubio Garcia <arubio@cells.es>
