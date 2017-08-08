@@ -36,12 +36,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class BasicCS{
   public:
     BasicCS() {};
-    BasicCS(byte gpio);
+    BasicCS(int gpio);
     void setHigh() {setValue(true);};
     void setLow() {setValue(false);};
   private:
     virtual void setValue(bool value);
-    byte gpio;
+    int gpio;
     
 };
 

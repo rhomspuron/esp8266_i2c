@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "max318xx.h"
 
-BasicCS::BasicCS(byte gpio):gpio(gpio){
+BasicCS::BasicCS(int gpio):gpio(gpio){
   pinMode(gpio, OUTPUT);
   setHigh();
 }
