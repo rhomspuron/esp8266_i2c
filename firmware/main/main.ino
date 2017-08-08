@@ -79,7 +79,7 @@ bool flg_finding = false;
 
 ADCSensor st1(A0);
 
-Max31855Sensor st2(BasicCS(GPIO_CS_1));
+Max31855Sensor st2(BasicCS(GPIO_CS_1),1000);
 Max31855Sensor st3(BasicCS(GPIO_CS_2));
 
 TC74Sensor st4(0x48);
@@ -235,7 +235,7 @@ String readTemps(int precision){
 //**************************************************************//
 
 String readStates(){
-  String str_buff;
+  String str_buff("");
   bool alarm = false;
   double value;
   StringStream buff = StringStream(str_buff);
@@ -248,16 +248,18 @@ String readStates(){
       value = sensors[i]->getValue();
       buff.print(double2str(value));
       buff.print("); ");
+      printDebug(str_buff);
     }
     
   }
   if (!alarm)
-    buff.print('OK');
+    buff.print("OK; ");
+  
+  buff.print("Finding: ");
   if(flg_finding)
-    buff.print("; Finding: True");
+    buff.print("True; ");
   else
-    buff.print("; Finding: False");
-    
+    buff.print("False; ");
   buff.print("\n");
   printDebug("readStates: ");
   printDebug(str_buff);
