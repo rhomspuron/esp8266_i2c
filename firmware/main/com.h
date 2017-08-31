@@ -2,9 +2,9 @@
 /*********************************************************************
 ESP8266ARS: Arduino project for ALBA Remote Sensors base on ESP8266. 
 
-Autors: Roberto J. Homs Puron <rhoms@cells.es>, 
-        Alberto Rubio Garcia <arubio@cells.es>
-        Sergio Astorga Sanchez <sastorga@cells.es>
+Author(s): Roberto J. Homs Puron <rhoms@cells.es>, 
+           Alberto Rubio Garcia <arubio@cells.es>
+           Sergio Astorga Sanchez <sastorga@cells.es>
         
 Copyright (C) 2017, CELLS / ALBA Synchrotron
 
