@@ -27,7 +27,7 @@
 from setuptools import setup, find_packages
 
 # Do not update manually
-__version = '0.1.0'
+__version = '0.2.0-alpha'
 
 long_description = """ Python library to control the esp8266 Alba Remote Sensor.
 """
