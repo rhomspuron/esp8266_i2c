@@ -98,13 +98,9 @@ def basicTest(host, port=23):
     for i in range(1, rs.nr_sensors+1):
         t_name = 'T%d' % i
         print '%s:%r' % (t_name, getattr(rs, t_name))
+    
     print 'Device State: %r %r' % rs.state
+    print 'Device is finding: %r' rs.finding
 
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) > 1:
-        host = sys.argv[1]
-    else:
-        host = '10.210.1.135'
-    basicTest(host)
+
 
