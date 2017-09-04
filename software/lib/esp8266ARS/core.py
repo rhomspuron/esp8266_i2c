@@ -58,9 +58,8 @@ class TemperatureSensors(object):
     def read_hardware(self):
         self.raw_temps = self._sendCmd('temp').split(';')[:-1]
         result = self._sendCmd('state').split(';')[:-1]
-        self.find_state = bool(result[-1].split(':')[1])
+        self.find_state = result[-1].split(':')[1].strip().lower() == 'true'
         self.raw_states =result[:-1]
-    
 
     @property
     def finding(self):
@@ -100,7 +99,7 @@ def basicTest(host, port=23):
         print '%s:%r' % (t_name, getattr(rs, t_name))
     
     print 'Device State: %r %r' % rs.state
-    print 'Device is finding: %r' rs.finding
+    print 'Device is finding: %r' % rs.finding
 
 
 
