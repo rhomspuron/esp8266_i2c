@@ -27,8 +27,6 @@ import functools
 import time
 
 class TemperatureSensors(object):
-
-
     def __init__(self, host, port=23, timeout=3):
         self.rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.rs.settimeout(timeout)
@@ -59,16 +57,32 @@ class TemperatureSensors(object):
 
     def read_hardware(self):
         self.raw_temps = self._sendCmd('temp').split(';')[:-1]
-        self.raw_states = self._sendCmd('state')[:-1]
+        result = self._sendCmd('state').split(';')[:-1]
+        self.find_state = bool(result[-1].split(':')[1])
+        self.raw_states =result[:-1]
+    
+
+    @property
+    def finding(self):
+        self.read_hardware()
+        return self.find_state
+
+    @finding.setter
+    def finding(self, start):
+        if start == True:
+            self._sendCmd('find')
+        else:
+            self._sendCmd('found')
 
     @property
     def state(self):
-        if 'OK' in self.raw_states.upper():
+        self.read_hardware()
+        if 'OK' in self.raw_states[0].upper():
             state = 'OK'
             status = 'All sensors are in ranges'
         else:
             state = 'ALARM'
-            status = self.raw_states
+            status = '%r' % self.raw_states
         return state, status
 
     def read_temp(self, sensor_nr):
@@ -76,7 +90,6 @@ class TemperatureSensors(object):
         start = len('T%d:' % sensor_nr)
         temp = self.raw_temps[sensor_nr - 1][start:]
         return temp
-
 
 
 def basicTest(host, port=23):
