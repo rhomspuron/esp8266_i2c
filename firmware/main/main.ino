@@ -176,9 +176,11 @@ void loop() {
             break;
           case FIND: 
             findStart();
+            com.sendData(String("Done\n"));
             break;
           case FOUND:
             findStop();
+            com.sendData(String("Done\n"));
             break;
           case STATE:
             com.sendData(readStates());
