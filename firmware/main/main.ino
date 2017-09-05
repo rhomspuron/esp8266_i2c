@@ -47,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 //                 Gloabals declarations                        //
 //**************************************************************//
+//#define DEVELOP
 #define DEBUG true
 #define BUZZER_ON LOW
 #define BUZZER_OFF HIGH
@@ -77,6 +78,7 @@ WifiCom com;
 bool flg_alarm = false;
 bool flg_finding = false;
 
+#ifdef DEVELOP
 ADCSensor st1(A0);
 
 Max31855Sensor st2(BasicCS(GPIO_CS_1),1000);
@@ -90,6 +92,14 @@ TC74Sensor st7(0x4D);
 
 BasicSensor* sensors[] = {&st1,&st2,&st3}; //,&st4,&st5};
 int nr_sensors = 3; //5;
+
+#else
+Max31855Sensor st1(BasicCS(GPIO_CS_1));
+Max31855Sensor st2(BasicCS(GPIO_CS_2));
+
+BasicSensor* sensors[] = {&st1,&st2}; 
+int nr_sensors = 2; 
+#endif
 
 
 //**************************************************************//
