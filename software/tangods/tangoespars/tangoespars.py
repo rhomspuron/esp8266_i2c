@@ -48,14 +48,13 @@ class TangoEspARS(Device):
             attr_prop.set_display_unit(attr_unit)
             attr_prop.set_standard_unit(attr_unit)
             attr_prop.set_unit(attr_unit)
-            attr_prop.set_event_piriod(100)
+            attr_prop.set_event_period('100')
             attr = Attr(attr_name, PyTango.DevDouble)
             attr.set_default_properties(attr_prop)
             self.add_attribute(attr, r_meth=self.read_attrs)
 
     def read_attrs(self, attr):
-        attr_name = self.Attrs[attr.get_name()][0]
-        value = getattr(self.esp_device, attr_name)
+        value = getattr(self.esp_device, attr.get_name())
         attr.set_value(value)
 
     def always_executed_hook(self):

@@ -88,7 +88,7 @@ class TemperatureSensors(object):
         self.read_hardware()
         start = len('T%d:' % sensor_nr)
         temp = self.raw_temps[sensor_nr - 1][start:]
-        return temp
+        return float(temp)
 
 
 def basicTest(host, port=23):
