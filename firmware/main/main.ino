@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 //                 Gloabals declarations                        //
 //**************************************************************//
-//#define DEVELOP
+#define DEVELOP
 #define DEBUG true
 #define BUZZER_ON LOW
 #define BUZZER_OFF HIGH
@@ -81,8 +81,8 @@ bool flg_finding = false;
 #ifdef DEVELOP
 ADCSensor st1(A0);
 
-Max31855Sensor st2(BasicCS(GPIO_CS_1),1000);
-Max31855Sensor st3(BasicCS(GPIO_CS_2));
+Max31855Sensor st2(MAX31855(BasicCS(GPIO_CS_1)),1000);
+Max31855Sensor st3(MAX31855(BasicCS(GPIO_CS_2)));
 
 TC74Sensor st4(0x48);
 TC74Sensor st5(0x4A);
