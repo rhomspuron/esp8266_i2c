@@ -94,6 +94,11 @@ bool WifiCom::isCmdValid(){
     cmd = FIND;
   else if(str == "FOUND")
     cmd = FOUND;
+  else if(str == "DON")
+    cmd = DON;
+  else if(str == "DOFF")
+    cmd = DOFF;
+  
   else{
     cmd = NONE;
   }

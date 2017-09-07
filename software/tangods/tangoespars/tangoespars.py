@@ -48,12 +48,16 @@ class TangoEspARS(Device):
             attr_prop.set_display_unit(attr_unit)
             attr_prop.set_standard_unit(attr_unit)
             attr_prop.set_unit(attr_unit)
-            attr_prop.set_event_period('100')
+            #attr_prop.set_event_rel_change(0.01)
             attr = Attr(attr_name, PyTango.DevDouble)
             attr.set_default_properties(attr_prop)
-            self.add_attribute(attr, r_meth=self.read_attrs)
+            
+            attr = self.add_attribute(attr, r_meth=self.read_attrs)
+            self.poll_attribute(attr_name, 200)
+            self.set_change_event(attr_name, False)
 
     def read_attrs(self, attr):
+    
         value = getattr(self.esp_device, attr.get_name())
         attr.set_value(value)
 
