@@ -75,7 +75,7 @@ class ADCSensor : public BasicSensor{
 
 class Max31855Sensor: public BasicSensor{
   public:
-    Max31855Sensor(BasicCS cs, double a=1, double b=0, 
+    Max31855Sensor(BasicCS *cs, double a=1, double b=0, 
               double v_min=-1000, double v_max=1000):
               BasicSensor(a,b,v_min, v_max),
               sensor(cs){};
