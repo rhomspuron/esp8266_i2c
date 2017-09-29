@@ -56,8 +56,8 @@ class Pcf8574CS: public BasicCS{
 
 class MAX31855{
   public:
-    MAX31855(BasicCS cs, int8_t sck, int8_t miso);
-    MAX31855(BasicCS cs);
+    MAX31855(BasicCS *cs, int8_t sck, int8_t miso);
+    MAX31855(BasicCS *cs);
    
     double readThermocouple();
     double readInternal();
@@ -67,7 +67,7 @@ class MAX31855{
     bool isFault(); 
     
   private:
-    BasicCS cs;
+    BasicCS *cs;
     int8_t sck, miso;
     double thermocouple, internal;
     bool short_vcc;

@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define MAX_READ_BUFFER 20
 
-enum Cmds{NONE=0,TEMP,STATE,CONFIG,FIND,FOUND,SENSORS,DON,DOFF};
+enum Cmds{NONE=0,TEMP,STATE,CONFIG,FIND,FOUND,SENSORS};
 
 class WifiCom {
   public:

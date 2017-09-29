@@ -38,7 +38,7 @@ void BasicCS::setValue(bool value){
 Pcf8574CS::Pcf8574CS(int addr, uint8_t pin): 
   addr(addr), pin(pin)
 {
-    //Wire.begin();
+    Wire.begin();
 }
 
 void Pcf8574CS::setValue(bool value){
@@ -47,13 +47,13 @@ void Pcf8574CS::setValue(bool value){
   Wire.beginTransmission(addr);
   data = 0XFF;
   if(value == false)
-    data &= ~(1<<pin);
+     data &= ~(1<<pin);
   Wire.write(data);
   Wire.endTransmission();
   delay(10);
 }
 
-MAX31855::MAX31855(BasicCS cs, int8_t sck, int8_t miso):
+MAX31855::MAX31855(BasicCS *cs, int8_t sck, int8_t miso):
                    cs(cs), sck(sck), miso(miso){
 
   // Software SPI
@@ -61,11 +61,10 @@ MAX31855::MAX31855(BasicCS cs, int8_t sck, int8_t miso):
   pinMode(miso, INPUT);
 }
 
-MAX31855::MAX31855(BasicCS cs): cs(cs), sck(-1), miso(-1){
-
-  if (sck == -1){
-    SPI.begin();
-  }
+MAX31855::MAX31855(BasicCS *cs): cs(cs), sck(-1), miso(-1){
+  
+  SPI.begin();
+  
 }
 
 double MAX31855::readThermocouple(){
@@ -96,7 +95,7 @@ void MAX31855::updateValues(){
   uint32_t data = 0;
 
   // Read 32 bits data
-  cs.setLow();
+  cs->setLow();
   if (sck == -1){
     // Hardware SPI
     SPI.beginTransaction(SPISettings(MAX_FREQ, BITS_ORDER, SPI_MODE));
@@ -110,6 +109,7 @@ void MAX31855::updateValues(){
     SPI.endTransaction();
   } else {
     // Software SPI
+
     digitalWrite(sck, HIGH);
     delay(1);
 
@@ -124,7 +124,7 @@ void MAX31855::updateValues(){
       delay(0.001);
     }
   }
-  cs.setHigh();
+  cs->setHigh();
   
   /* Process data bits:
    *  31 -> 18: Thermocouple temperature 31=sign, 30=2^10, 18=2^-2

@@ -53,9 +53,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define BUZZER_OFF HIGH
 #define SERVER_PORT 23
 #define GPIO_LED_WIFI_CONNECTED 16  
-#define GPIO_BUZZ_ALARM 2 
-#define GPIO_CS_1 0
-#define GPIO_CS_2 15
+#define GPIO_BUZZ_ALARM 2  
+#define GPIO_CS_1 4
+#define GPIO_CS_2 5
 
 
 String double2str(double value, int presition=100);
@@ -80,11 +80,10 @@ bool flg_finding = false;
 
 #ifdef DEVELOP
 ADCSensor st1(A0);
-Pcf8574CS d1(0x39,0);
-Pcf8574CS d2(0x39,1);
-
-Max31855Sensor st2(MAX31855(BasicCS(GPIO_CS_1)),1000);
-Max31855Sensor st3(MAX31855(BasicCS(GPIO_CS_2)));
+Pcf8574CS cs_1(0x39,0);
+Pcf8574CS cs_2(0x39,1);
+Max31855Sensor st2(&cs_1);
+Max31855Sensor st3(&cs_2);
 
 //TC74Sensor st4(0x48);
 //TC74Sensor st5(0x4A);
@@ -96,8 +95,10 @@ BasicSensor* sensors[] = {&st1,&st2,&st3}; //,&st4,&st5};
 int nr_sensors = 3; //5;
 
 #else
-Max31855Sensor st1(BasicCS(GPIO_CS_1));
-Max31855Sensor st2(BasicCS(GPIO_CS_2));
+BasicCS cs_1(GPIO_CS_1);
+BasicCS cs_2(GPIO_CS_2);
+Max31855Sensor st1(&cs_1);
+Max31855Sensor st2(&cs_2);
 
 BasicSensor* sensors[] = {&st1,&st2}; 
 int nr_sensors = 2; 
@@ -158,18 +159,14 @@ void setup() {
   pinMode(GPIO_BUZZ_ALARM, OUTPUT);
   digitalWrite(GPIO_BUZZ_ALARM, BUZZER_OFF);
 
-  Wire.begin();
-  
+    
 }
 
 //**************************************************************//
 //                Main Loop Method                              //
 //**************************************************************//
 
-void loop() {
-  Wire.beginTransmission(0X39);
-  Wire.write(0XFF);
-  Wire.endTransmission();
+void loop() { 
   bool has_client = false;
   checkStates();
   if (server.hasClient()){
@@ -178,7 +175,7 @@ void loop() {
     tmp.stop();
     has_client = true;
   }
-
+  
   while(has_client){
     if (com.isConnected()){
       checkStates();
@@ -205,23 +202,6 @@ void loop() {
           case SENSORS:
             com.sendData(readNrSensors());
             break;
-          case DON:
-            d1.setHigh();
-            d2.setHigh();
-            //Wire.beginTransmission(0X39);
-            //Wire.write(0XFF);
-            //Wire.endTransmission();
-            com.sendData("Don \n");
-            break;
-            
-          case DOFF:
-            d1.setLow();
-            //Wire.beginTransmission(0X39);
-            //Wire.write(0X00);
-            //Wire.endTransmission();
-            com.sendData("Doff \n");
-            break;
-            
         }
     }
     else has_client = false;
@@ -255,20 +235,7 @@ String readTemps(int precision){
   StringStream buff = StringStream(str_buff);
   double value;
   for(int i=0; i< nr_sensors; i++){
-    switch(i){
-      case 0: break;
-      case 1: d1.setLow(); break;
-      case 2: d2.setLow(); break;
-      
-    }
     value = sensors[i]->getValue();
-    switch(i){
-      case 0: break;
-      case 1: d1.setHigh(); break;
-      case 2: d2.setHigh(); break;
-      
-    }
-    
     buff.print("T");
     buff.print(i+1,DEC);
     buff.print(":");
