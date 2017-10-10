@@ -45,7 +45,7 @@ void Pcf8574CS::setValue(bool value){
   uint8_t data;
   
   Wire.beginTransmission(addr);
-  data = 0XFF;
+  data = 0X0F;
   if(value == false)
      data &= ~(1<<pin);
   Wire.write(data);
@@ -62,7 +62,7 @@ MAX31855::MAX31855(BasicCS *cs, int8_t sck, int8_t miso):
 }
 
 MAX31855::MAX31855(BasicCS *cs): cs(cs), sck(-1), miso(-1){
-  
+  cs->setHigh();
   SPI.begin();
   
 }
