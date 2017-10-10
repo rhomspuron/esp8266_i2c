@@ -49,8 +49,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 #define DEVELOP
 #define DEBUG true
-#define BUZZER_ON LOW
-#define BUZZER_OFF HIGH
+#define BUZZER_ON HIGH
+#define BUZZER_OFF LOW
 #define SERVER_PORT 23
 #define GPIO_LED_WIFI_CONNECTED 16  
 #define GPIO_BUZZ_ALARM 2  
@@ -79,11 +79,16 @@ bool flg_alarm = false;
 bool flg_finding = false;
 
 #ifdef DEVELOP
-ADCSensor st1(A0);
+//ADCSensor st1(A0);
 Pcf8574CS cs_1(0x39,0);
 Pcf8574CS cs_2(0x39,1);
-Max31855Sensor st2(&cs_1);
-Max31855Sensor st3(&cs_2);
+Pcf8574CS cs_3(0x39,2);
+Pcf8574CS cs_4(0x39,3);
+
+Max31855Sensor st1(&cs_1);
+Max31855Sensor st2(&cs_2);
+Max31855Sensor st3(&cs_3);
+Max31855Sensor st4(&cs_4);
 
 //TC74Sensor st4(0x48);
 //TC74Sensor st5(0x4A);
@@ -91,8 +96,8 @@ Max31855Sensor st3(&cs_2);
 //TC74Sensor st7(0x4D);
 
 
-BasicSensor* sensors[] = {&st1,&st2,&st3}; //,&st4,&st5};
-int nr_sensors = 3; //5;
+BasicSensor* sensors[] = {&st1,&st2,&st3,&st4 };
+int nr_sensors = 4; //5;
 
 #else
 BasicCS cs_1(GPIO_CS_1);
